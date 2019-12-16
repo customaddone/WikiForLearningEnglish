@@ -18,6 +18,11 @@ jobs:
       #
       # - image: redis:2.8.19
 
+    environment:
+      - APP_DEBUG: true
+      - APP_ENV: testing
+      - APP_KEY: base64:yvJHfIA/y67BDZqt8Cn/2n76Sdg6JRFzYyHvNScWfew=
+
     steps:
       - checkout
 
