@@ -16,6 +16,7 @@ class HelloTest extends TestCase
 
     // $ php artisan make:test HelloTest
     // CircleCIに - run: ./vendor/bin/phpunit を追加
+    // php artisan key:generateしようね
     public function testExample()
     {
         $response = $this->get('/');
