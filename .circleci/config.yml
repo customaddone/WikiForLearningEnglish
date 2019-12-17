@@ -9,30 +9,18 @@
 # CircleCIのバージョンを指定する
 version: 2
 jobs:
-  build:
-    # CI環境で利用するDockerコンテナあるいはVMのイメージを指定する。
-    # docker / machine / macos のいずれかをconfig.ymlに記載する必要がある。
-
-    environment:
-      - APP_DEBUG: true
-      - APP_ENV: testing
-      - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
-      - APP_URL: http://localhost:8888
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:2.8.19
   build_image:
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.3-node-browsers
       - image: circleci/node:7.10-browsers
       - image: selenium/standalone-chrome
+
+      environment:
+        - APP_DEBUG: true
+        - APP_ENV: testing
+        - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
+        - APP_URL: http://localhost:8888
 
     steps:
       - checkout
