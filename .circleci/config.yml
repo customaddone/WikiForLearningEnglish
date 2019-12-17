@@ -47,7 +47,7 @@ jobs:
           name: build image
           command: |
             $(aws ecr get-login --no-include-email --region ap-northeast-1)
-            docker build -t ${ECR_DOMAIN}/sample-image:$ CIRCLE_ SHA 1 -t ${ECR_DOMAIN}/sample-image:latest  .
+            docker build -t 183344260146.dkr.ecr.ap-northeast-1.amazonaws.com/sample-image:$ CIRCLE_ SHA 1 -t 183344260146.dkr.ecr.ap-northeast-1.amazonaws.com/sample-image:latest  .
       - run:
           name: Push docker image
           command: |
