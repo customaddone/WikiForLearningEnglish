@@ -77,9 +77,9 @@ jobs:
       # awsで上げたアプリの中身は更新される　自動化したいなぁ
       - run: ./vendor/bin/phpunit
       - run:
-        name: Running server
-        command: php artisan serve
-        background: true
+          name: Running server
+          command: php artisan serve
+          background: true
 
       - run:
           name: Run Dusk
