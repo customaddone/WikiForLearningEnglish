@@ -1,13 +1,28 @@
 # PHP CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
-# もちろんMySQL使っているのでsqliteのテストは通らない
+# １ circleciのサイトに行き、githubで認証
+# ２ vuequiz（プロジェクト直下）に.circleciディレクトリを生成
+# ３ .circleci直下にconfig.ymlファイルを生成
+# ４ config/database.phpにテストデータ用設定を書く
+
+# CircleCIのバージョンを指定する
 version: 2
 jobs:
   build:
+    # CI環境で利用するDockerコンテナあるいはVMのイメージを指定する。
+    # docker / machine / macos のいずれかをconfig.ymlに記載する必要がある。
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.3-node-browsers
+      - image: circleci/node:7.10-browsers
+      - image: selenium/standalone-chrome
+
+    environment:
+      - APP_DEBUG: true
+      - APP_ENV: testing
+      - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
+      - APP_URL: http://localhost:8888
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -17,17 +32,20 @@ jobs:
       # - image: circleci/mysql:5.7-ram
       #
       # - image: redis:2.8.19
-
-    environment:
-      - APP_DEBUG: true
-      - APP_ENV: testing
-      - APP_KEY: base64:yvJHfIA/y67BDZqt8Cn/2n76Sdg6JRFzYyHvNScWfew=
-
     steps:
       - checkout
+      - setup_remote_docker
 
       - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
       - run: sudo docker-php-ext-install zip
+      - run:
+          name: run selenium
+          command: docker run -d -p 4444:4444 selenium/standalone-chrome
+      # composer.jsonで  "laravel/dusk"を"dont-discover"に書く
+      - run: composer install -n --prefer-dist
+      - run:
+          name: install-npm
+          command: npm install
 
       # Download and cache dependencies
       - restore_cache:
@@ -36,8 +54,6 @@ jobs:
             - v1-dependencies-{{ checksum "composer.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-
-      - run: composer install -n --prefer-dist
 
       - save_cache:
           key: v1-dependencies-{{ checksum "composer.json" }}
@@ -53,4 +69,18 @@ jobs:
           paths:
             - node_modules
 
+      # run tests with phpunit or codecept
+      #- run: ./vendor/bin/phpunit
+
+      # sshでec2インスタンス内に入って
+      # git fetch origin masterとgit reset --hard origin/masterしとけば
+      # awsで上げたアプリの中身は更新される　自動化したいなぁ
       - run: ./vendor/bin/phpunit
+      - run:
+          name: Running server
+          command: php artisan serve
+          background: true
+
+      - run:
+          name: Run Dusk
+          command: APP_URL=http://127.0.0.1:8000 php artisan dusk
