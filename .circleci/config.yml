@@ -16,11 +16,11 @@ jobs:
       - image: circleci/node:7.10-browsers
       - image: selenium/standalone-chrome
 
-  environment:
-    - APP_DEBUG: true
-    - APP_ENV: testing
-    - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
-    - APP_URL: http://localhost:8888
+    environment:
+      - APP_DEBUG: true
+      - APP_ENV: testing
+      - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
+      - APP_URL: http://localhost:8888
 
     steps:
       - checkout
