@@ -75,8 +75,8 @@ jobs:
       # sshでec2インスタンス内に入って
       # git fetch origin masterとgit reset --hard origin/masterしとけば
       # awsで上げたアプリの中身は更新される　自動化したいなぁ
-      - run: php artisan config:cache
       - run: ./vendor/bin/phpunit
+      - run: php artisan serve
       - run:
           name: Run Dusk
           command: APP_URL=http://localhost:8888 php artisan dusk
