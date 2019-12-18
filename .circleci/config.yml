@@ -90,7 +90,6 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.3-node-browsers
       - image: circleci/node:7.10-browsers
-      - image: selenium/standalone-chrome
 
     environment:
       - APP_DEBUG: true
@@ -102,13 +101,6 @@ jobs:
       - checkout
       - setup_remote_docker
 
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
-      # composer.jsonで  "laravel/dusk"を"dont-discover"に書く
-      - run: composer install -n --prefer-dist
-      - run:
-          name: install-npm
-          command: npm install
       - run:
           name: install aws cli
           command: |
@@ -131,7 +123,7 @@ workflows:
   test:
     jobs:
       - build
-      - build_image:
+      - build_image
           # buildができたらbuild_image起動
           requires:
             - build
