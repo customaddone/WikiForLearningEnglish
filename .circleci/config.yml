@@ -89,7 +89,6 @@ jobs:
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.3-node-browsers
-      - image: circleci/node:7.10-browsers
       - image: docker:19.03
 
     environment:
