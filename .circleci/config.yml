@@ -120,6 +120,6 @@ workflows:
           requires:
             - build
           # masterブランチでのみbuild_image起動
-          filters:
-            branches:
-              only: master
+          #filters:
+            #branches:
+              #only: master
