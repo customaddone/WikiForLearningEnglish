@@ -87,7 +87,10 @@ jobs:
 
   build_image:
     docker:
-      - image: docker:18.09.0
+      # Specify the version you desire here
+      - image: circleci/php:7.3-node-browsers
+      - image: circleci/node:7.10-browsers
+      - image: docker:19.03
 
     environment:
       - APP_DEBUG: true
