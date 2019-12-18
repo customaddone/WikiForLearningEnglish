@@ -110,17 +110,16 @@ jobs:
           command: |
             docker push ${ECR_DOMAIN}/sample-image:$CIRCLE_SHA1
             docker push ${ECR_DOMAIN}/sample-image:latest
-
-  workflows:
-    version: 2
-    test:
-      jobs:
-        - build
-        - build_image:
-            # buildができたらbuild_image起動
-            requires:
-              - build
-            # masterブランチでのみbuild_image起動
-            filters:
-              branches:
-                only: master
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
+      - build_image:
+          # buildができたらbuild_image起動
+          requires:
+            - build
+          # masterブランチでのみbuild_image起動
+          filters:
+            branches:
+              only: master
