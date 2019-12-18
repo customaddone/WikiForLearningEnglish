@@ -32,6 +32,7 @@ jobs:
       # - image: circleci/mysql:5.7-ram
       #
       # - image: redis:2.8.19
+
     steps:
       - checkout
       - setup_remote_docker
@@ -68,7 +69,6 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
-
       # run tests with phpunit or codecept
       #- run: ./vendor/bin/phpunit
 
@@ -84,3 +84,49 @@ jobs:
       - run:
           name: Run Dusk
           command: APP_URL=http://127.0.0.1:8000 php artisan dusk
+
+  build_image:
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.3-node-browsers
+      - image: docker:19.03
+
+    environment:
+      - APP_DEBUG: true
+      - APP_ENV: testing
+      - APP_KEY: base64:YlIJx6uH3OUb3hxN+PAiJKlC+EGZ2KYi8VHxsfdJpLk=
+      - APP_URL: http://localhost:8888
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: install aws cli
+          command: |
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      - run:
+          name: build image
+          command: |
+            $(aws ecr get-login --no-include-email --region ap-northeast-1)
+            docker build -t ${ECR_DOMAIN}/sample-image:$CIRCLE_SHA1 -t ${ECR_DOMAIN}/sample-image:latest  .
+      - run:
+          name: Push docker image
+          command: |
+            docker push ${ECR_DOMAIN}/sample-image:$CIRCLE_SHA1
+            docker push ${ECR_DOMAIN}/sample-image:latest
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
+      - build_image:
+          # buildができたらbuild_image起動
+          requires:
+            - build
+          # masterブランチでのみbuild_image起動
+          #filters:
+            #branches:
+              #only: master
