@@ -87,9 +87,7 @@ jobs:
 
   build_image:
     docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.3-node-browsers
-      - image: circleci/node:7.10-browsers
+      - image: docker:18.09.0
 
     environment:
       - APP_DEBUG: true
@@ -107,7 +105,6 @@ jobs:
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-      - run: ls /home/circleci/project
       - run:
           name: build image
           command: |
