@@ -88,13 +88,15 @@ jobs:
   build_image:
     docker:
       - image: docker:18.09.0
+      - image: circleci/php:7.3-node-browsers
+      - image: circleci/node:7.10-browsers
 
     steps:
       - checkout
       - setup_remote_docker
 
-      - run: apt-get update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: apt-get docker-php-ext-install zip
+      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo docker-php-ext-install zip
       - run: composer install -n --prefer-dist
       - run:
           name: install-npm
