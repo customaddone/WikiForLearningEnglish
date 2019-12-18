@@ -21,7 +21,6 @@ abstract class DuskTestCase extends BaseTestCase
     {
         // static::startChromeDriver();
     }
-
     /**
      * Create the RemoteWebDriver instance.
      *
