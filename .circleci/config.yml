@@ -69,6 +69,29 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
+      # run tests with phpunit or codecept
+      #- run: ./vendor/bin/phpunit
+
+      # sshでec2インスタンス内に入って
+      # git fetch origin masterとgit reset --hard origin/masterしとけば
+      # awsで上げたアプリの中身は更新される　自動化したいなぁ
+      - run: ./vendor/bin/phpunit
+      - run:
+          name: Running server
+          command: php artisan serve
+          background: true
+
+      - run:
+          name: Run Dusk
+          command: APP_URL=http://127.0.0.1:8000 php artisan dusk
+
+  build_image:
+    docker:
+      - image: docker:18.09.0
+
+    steps:
+      - checkout
+      - setup_remote_docker
 
       - run:
           name: install aws cli
@@ -88,18 +111,16 @@ jobs:
             docker push ${ECR_DOMAIN}/sample-image:$CIRCLE_SHA1
             docker push ${ECR_DOMAIN}/sample-image:latest
 
-      # run tests with phpunit or codecept
-      #- run: ./vendor/bin/phpunit
-
-      # sshでec2インスタンス内に入って
-      # git fetch origin masterとgit reset --hard origin/masterしとけば
-      # awsで上げたアプリの中身は更新される　自動化したいなぁ
-      - run: ./vendor/bin/phpunit
-      - run:
-          name: Running server
-          command: php artisan serve
-          background: true
-
-      - run:
-          name: Run Dusk
-          command: APP_URL=http://127.0.0.1:8000 php artisan dusk
+  workflows:
+    version: 2
+    test:
+      jobs:
+        - build
+        - build_image:
+            # buildができたらbuild_image起動
+            requires:
+              - build
+            # masterブランチでのみbuild_image起動
+            filters:
+              branches:
+                only: master
