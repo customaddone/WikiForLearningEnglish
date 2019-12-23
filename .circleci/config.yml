@@ -122,10 +122,9 @@ workflows:
   test:
     jobs:
       - build
-      - build_image:
+
           # buildができたらbuild_image起動
-          requires:
-            - build
+          
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:
