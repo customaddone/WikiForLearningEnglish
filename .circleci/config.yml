@@ -117,7 +117,6 @@ jobs:
           command: |
             docker push ${ECR_DOMAIN}/sample-image:$CIRCLE_SHA1
             docker push ${ECR_DOMAIN}/sample-image:latest
-            
 workflows:
   version: 2
   test:
