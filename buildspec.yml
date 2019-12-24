@@ -1,14 +1,17 @@
 version: 0.2
 
 phases:
+  # 使用するDocker
   install:
     runtime-versions:
       docker: 18
+  # ECRにログイン
   pre_build:
     commands:
     - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
     - REPO=$(aws ecr describe-repositories --repository-names example --output text --query "repositories[0].repositoryUri")
     - IMAGE=$REPO:latest
+  # Dockerイメージのビルドとプッシュ
   build:
     commands:
     - docker build -t $IMAGE .
