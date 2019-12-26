@@ -15,7 +15,6 @@ phases:
     - docker pull nginx:latest
     - docker push $IMAGE
     - docker run -d -it --name test-nginx nginx:latest
-
   post_build:
     commands:
     - printf '[{"name":"example","imageUri":"https://github.com/customaddone/WikiForLearningEnglish:latest"}]' $IMAGE > imagedefinitions.json
