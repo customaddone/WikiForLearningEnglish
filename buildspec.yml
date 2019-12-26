@@ -12,7 +12,10 @@ phases:
   build:
     commands:
     - docker build -t $IMAGE .
+    - docker build -t nginx:latest
     - docker push $IMAGE
+    - docker push nginx:latest
+
   post_build:
     commands:
     - printf '[{"name":"example","imageUri":"https://github.com/customaddone/WikiForLearningEnglish:latest"}]' $IMAGE > imagedefinitions.json
