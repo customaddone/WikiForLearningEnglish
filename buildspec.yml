@@ -12,9 +12,9 @@ phases:
   build:
     commands:
     - docker build -t $IMAGE .
-    - docker build -t nginx:latest
+    - docker pull nginx:latest
     - docker push $IMAGE
-    - docker push nginx:latest
+    - docker run -d -it --name test-nginx nginx:latest
 
   post_build:
     commands:
