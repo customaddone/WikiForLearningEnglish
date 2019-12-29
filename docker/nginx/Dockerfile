@@ -1,7 +1,10 @@
-FROM nginx:1.17-alpine
+FROM nginx:1.15-alpine
 
-ADD ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY public /var/www/html/public
+COPY docker/nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
 
-RUN mkdir -p /work/app/public
+ENV PHP_HOST=127.0.0.1
 
-ADD ./public /work/app/public
+EXPOSE 80
+
+CMD /bin/sh -c 'sed "s/\${PHP_HOST}/${PHP_HOST}/" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"'
