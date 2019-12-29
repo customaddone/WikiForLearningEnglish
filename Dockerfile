@@ -20,7 +20,6 @@ RUN set -eux && \
     icu-dev \
     libzip-dev && \
   cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
-  echo ${TZ} > /etc/timezone && \
   pecl install xdebug && \
   apk del .build-dependencies && \
   docker-php-ext-install intl pdo_mysql mbstring zip bcmath && \
