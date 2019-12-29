@@ -42,3 +42,11 @@ RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev lib
 ADD . /work/app
 
 WORKDIR /work/app
+
+FROM nginx:1.17-alpine
+
+ADD ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+RUN mkdir -p /work/app/public
+
+ADD ./public /work/app/public
