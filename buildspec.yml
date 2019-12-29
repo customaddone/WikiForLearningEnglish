@@ -15,6 +15,6 @@ phases:
     - docker push $IMAGE
   post_build:
     commands:
-    - printf '[{"name":"example","imageUri":"https://github.com/customaddone/WikiForLearningEnglish:latest"}]' $IMAGE > imagedefinitions.json
+    - printf '[{"name":"nginx","imageUri":"https://github.com/customaddone/WikiForLearningEnglish:latest"}]' $IMAGE > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
