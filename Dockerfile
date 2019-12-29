@@ -1,6 +1,5 @@
 FROM php:7.3-fpm-alpine
 
-// ARG Docker内で使用できる変数
 ARG PSYSH_DIR=/usr/local/share/psysh
 ARG PHP_MANUAL_URL=http://psysh.org/manual/ja/php_manual.sqlite
 
@@ -9,7 +8,6 @@ ARG TZ
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 
-// RUN docker buildされる時に実行される
 RUN set -eux && \
   apk update && \
   apk add --update --no-cache --virtual=.build-dependencies \
