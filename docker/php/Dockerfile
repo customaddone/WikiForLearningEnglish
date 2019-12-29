@@ -21,7 +21,7 @@ RUN set -x \
       tzdata && \
     apk add --update --no-cache \
       icu-dev \
-l     ibzip-dev \
+      libzip-dev \
     && docker-php-ext-install pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-autoloader --no-progress --no-dev
