@@ -1,4 +1,4 @@
-FROM php:7.3
+FROM php:7.3-fpm-alpine
 
 // ARG Docker内で使用できる変数
 ARG PSYSH_DIR=/usr/local/share/psysh
