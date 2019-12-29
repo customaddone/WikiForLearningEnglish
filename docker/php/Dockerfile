@@ -11,22 +11,37 @@ WORKDIR $WORKDIR
 COPY ./docker/php/php.ini /usr/local/etc/php
 COPY composer.json composer.lock ${WORKDIR}/
 
-RUN set -x \
-    && apk add --no-cache git php7-zlib zlib-dev \
-    && docker-php-ext-configure zip --with-libzip \
-    && docker-php-ext-install pdo_mysql zip  --without-libzip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-autoloader --no-progress --no-dev
+RUN set -eux && \
+  apk update && \
+  apk add --update --no-cache --virtual=.build-dependencies \
+    autoconf \
+    gcc \
+    g++ \
+    make \
+    tzdata && \
+  apk add --update --no-cache \
+    icu-dev \
+    libzip-dev && \
+  cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+  pecl install xdebug && \
+  apk del .build-dependencies && \
+  docker-php-ext-install intl pdo_mysql mbstring zip bcmath && \
+  docker-php-ext-enable xdebug && \
+  mkdir $PSYSH_DIR && wget $PHP_MANUAL_URL -P $PSYSH_DIR && \
+  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+  composer config -g repos.packagist composer https://packagist.jp && \
+  composer global require hirak/prestissimo
+
+RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
+  docker-php-ext-configure gd \
+    --with-gd \
+    --with-freetype-dir=/usr/include/ \
+    --with-png-dir=/usr/include/ \
+    --with-jpeg-dir=/usr/include/ && \
+  NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
+  docker-php-ext-install -j${NPROC} gd && \
+  apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
 
 COPY . .
-
-RUN set -x \
-    && composer install --no-progress --no-dev \
-    && php artisan config:clear \
-    && addgroup ${GNAME} -g ${GID} \
-    && adduser -D -G ${GNAME} -u ${UID} ${UNAME} \
-    && chown -R ${UNAME}:${GNAME} ${WORKDIR} \
-    && mv /root/.composer /home/${UNAME}/ \
-    && chown -R ${UNAME}:${GNAME} /home/${UNAME}
 
 USER ${UNAME}
