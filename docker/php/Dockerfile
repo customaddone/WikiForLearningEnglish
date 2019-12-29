@@ -12,10 +12,10 @@ COPY ./docker/php/php.ini /usr/local/etc/php
 COPY composer.json composer.lock ${WORKDIR}/
 
 RUN set -x \
-    && apk add --no-cache git php7-zlib zlib-dev --without-libzip \
+    && apk add --no-cache git php7-zlib zlib-dev \
     && docker-php-ext-install pdo_mysql zip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-autoloader --no-progress --no-dev 
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --without-libzip \
+    && composer install --no-autoloader --no-progress --no-dev
 
 COPY . .
 
