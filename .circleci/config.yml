@@ -128,14 +128,10 @@ workflows:
   test:
     jobs:
       - build
-      - build_image:
+      #- build_image:
           # buildができたらbuild_image起動
-          requires:
-             - build
-          - aws-ecr/build-and-push-image:
-             region: ap-northeast-1
-             account-url: 183344260146.dkr.ecr.ap-northeast-1.amazonaws.com/app
-             repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
+          #requires:
+             #- build
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:

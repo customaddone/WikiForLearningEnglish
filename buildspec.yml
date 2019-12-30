@@ -7,14 +7,18 @@ phases:
   pre_build:
     commands:
     - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-    - REPO=$(aws ecr describe-repositories --repository-names example --output text --query "repositories[0].repositoryUri")
-    - IMAGE=$REPO:latest
+    - APP_REPO=$(aws ecr describe-repositories --repository-names app --output text --query "repositories[0].repositoryUri")
+    - NGINX_REPO=$(aws ecr describe-repositories --repository-names nginx --output text --query "repositories[0].repositoryUri")
+    - APP_IMAGE=$APP_REPO:latest
+    - NGINX_IMAGE=$NGINX_REPO:latest
   build:
     commands:
-    - docker build -t $IMAGE .
-    - docker push $IMAGE
+    - docker build -t $APP_IMAGE -f ./docker/php/Dockerfile .
+    - docker push $APP_IMAGE
+    - docker build -t $NGINX_IMAGE -f ./docker/nginx/Dockerfile .
+    - docker push $NGINX_IMAGE
   post_build:
     commands:
-    - printf '[{"name":"nginx","imageUri":"https://github.com/customaddone/WikiForLearningEnglish:latest"}]' $IMAGE > imagedefinitions.json
+    - printf '[{"name":"example","imageUri":"%s"}, {"name":"example","imageUri":"%s"}]' $APP_IMAGE $NGINX_IMAGE > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
