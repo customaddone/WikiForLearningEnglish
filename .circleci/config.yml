@@ -8,6 +8,9 @@
 
 # CircleCIのバージョンを指定する
 version: 2
+orbs:
+  aws-ecr: circleci/aws-ecr@6.5.0
+  aws-ecs: circleci/aws-ecs@0.0.10
 jobs:
   build:
     # CI環境で利用するDockerコンテナあるいはVMのイメージを指定する。
@@ -129,6 +132,18 @@ workflows:
           # buildができたらbuild_image起動
           requires:
              - build
+      - aws-ecr/build-and-push-image:
+          region: ap-northeast-1
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
+          tag: "${CIRCLE_SHA1}"
+      - aws-ecs/deploy-service-update:
+          requires:
+             - aws-ecr/build-and-push-image
+                family: 'example'　# ECSのタスク定義名
+                cluster-name: 'example'　# ECSクラスター名
+                service-name: 'example'　# ECSのサービス名
+                container-image-name-updates: 'example'　# タスク定義で指定しているコンテナ名
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:
