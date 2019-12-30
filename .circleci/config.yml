@@ -128,10 +128,10 @@ workflows:
   test:
     jobs:
       - aws-ecr/build-and-push-image:
-          region: ap-northeast-1
-          account-url: AWS_ECR_ACCOUNT_URL
-          repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
-          tag: "${CIRCLE_SHA1}"
+        region: ap-northeast-1
+        account-url: AWS_ECR_ACCOUNT_URL
+        repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
+        tag: "${CIRCLE_SHA1}"
       - aws-ecs/deploy-service-update:
           requires:
              - aws-ecr/build-and-push-image
