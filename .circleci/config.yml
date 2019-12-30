@@ -118,8 +118,6 @@ jobs:
           command: |
             docker push ${ECR_DOMAIN_APP}/example:$CIRCLE_SHA1
             docker push ${ECR_DOMAIN_APP}/example:latest
-            docker push ${ECR_DOMAIN_NGINX}/example:$CIRCLE_SHA1
-            docker push ${ECR_DOMAIN_NGINX}/example:latest
 workflows:
   version: 2
   test:
