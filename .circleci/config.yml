@@ -123,17 +123,6 @@ jobs:
             docker push ${ECR_DOMAIN_APP}:latest
             docker push ${ECR_DOMAIN_NGINX}:$CIRCLE_SHA1
             docker push ${ECR_DOMAIN_NGINX}:latest
-      - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL
-          repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
-          tag: "${CIRCLE_SHA1}"
-      - aws-ecs/deploy-service-update:
-          requires:
-             - aws-ecr/build-and-push-image
-                 family: 'example'　# ECSのタスク定義名
-                 cluster-name: 'example'　# ECSクラスター名
-                 service-name: 'example'　# ECSのサービス名
-                 container-image-name-updates: 'example'　# タスク定義で指定しているコンテナ名
 workflows:
   version: 2
   test:
@@ -143,6 +132,7 @@ workflows:
           # buildができたらbuild_image起動
           requires:
              - build
+      - aws-ecr/build-and-push-image
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:
