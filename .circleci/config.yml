@@ -128,10 +128,10 @@ workflows:
   test:
     jobs:
       - build
-      - build_image:
+      #- build_image:
           # buildができたらbuild_image起動
-          requires:
-             - build
+          #requires:
+            # - build
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:
