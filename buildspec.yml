@@ -19,6 +19,6 @@ phases:
     - docker push $NGINX_IMAGE
   post_build:
     commands:
-    - printf '[{"name":"example","imageUri":"%s"}]' $APP_IMAGE  > imagedefinitions.json
+    - printf '[{"name":"example","imageUri":"%s"},{"name":"nginx","imageUri":"%s"}]' $APP_IMAGE $NGINX_IMAGE > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
