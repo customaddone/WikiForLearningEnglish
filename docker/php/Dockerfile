@@ -29,6 +29,8 @@ RUN set -x \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-autoloader --no-progress --no-dev
 
+RUN composer global require hirak/prestissimo
+
 COPY . .
 
 RUN set -x \
@@ -38,6 +40,7 @@ RUN set -x \
     && adduser -D -G ${GNAME} -u ${UID} ${UNAME} \
     && chown -R ${UNAME}:${GNAME} ${WORKDIR} \
     && mv /root/.composer /home/${UNAME}/ \
+    && php artisan key:generate \
     && chown -R ${UNAME}:${GNAME} /home/${UNAME}
 
 USER ${UNAME}
