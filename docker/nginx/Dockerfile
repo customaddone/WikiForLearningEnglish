@@ -1,8 +1,8 @@
 FROM nginx:1.15-alpine
 
-RUN ls
+RUN ls var/www/html
 
-RUN ls public
+RUN ls ./
 
 COPY public /var/www/html/public
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf.template
