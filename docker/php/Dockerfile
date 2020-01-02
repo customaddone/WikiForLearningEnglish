@@ -40,7 +40,6 @@ RUN set -x \
     && adduser -D -G ${GNAME} -u ${UID} ${UNAME} \
     && chown -R ${UNAME}:${GNAME} ${WORKDIR} \
     && mv /root/.composer /home/${UNAME}/ \
-    && php artisan key:generate \
     && chown -R ${UNAME}:${GNAME} /home/${UNAME}
 
 USER ${UNAME}
