@@ -5,7 +5,10 @@ ARG UNAME=www
 ARG GID=991
 ARG GNAME=www
 
-ENV WORKDIR=/var/www/html
+RUN mkdir -p /app
+ADD . /app/
+
+ENV WORKDIR=/app
 WORKDIR $WORKDIR
 
 COPY ./docker/php/php.ini /usr/local/etc/php
@@ -39,4 +42,5 @@ RUN set -x \
 
 USER ${UNAME}
 
-RUN ls
+RUN php artisan key:generate
+RUN chmod -R a+w storage/ bootstrap/cache
