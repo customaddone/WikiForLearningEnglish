@@ -5,6 +5,8 @@ ARG UNAME=www
 ARG GID=991
 ARG GNAME=www
 
+WORKDIR /app
+
 COPY ./docker/php/php.ini /usr/local/etc/php
 COPY composer.json composer.lock ${WORKDIR}/
 
@@ -37,8 +39,6 @@ USER ${UNAME}
 
 RUN mkdir -p /app
 ADD . /app/
-
-WORKDIR /app
 
 RUN php artisan key:generate
 RUN chmod -R a+w storage/ bootstrap/cache
