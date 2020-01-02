@@ -33,7 +33,6 @@ RUN set -x \
     && chown -R ${UNAME}:${GNAME} ${WORKDIR} \
     && mv /root/.composer /home/${UNAME}/ \
     && chown -R ${UNAME}:${GNAME} /home/${UNAME}
-
 USER ${UNAME}
 
 RUN mkdir -p /app
