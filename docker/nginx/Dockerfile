@@ -1,11 +1,11 @@
 FROM nginx:1.15-alpine
 
-RUN ls var/www/html
-
-RUN ls ./
-
 COPY public /var/www/html/public
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf.template
+
+RUN ls var/www
+
+RUN ls ./
 
 ENV PHP_HOST=127.0.0.1
 
