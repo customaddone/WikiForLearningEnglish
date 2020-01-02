@@ -11,7 +11,8 @@ services:
       - 8888:80
     environment:
       PHP_HOST: app
-
+    depends_on:
+      - app
   app:
     build:
       context: .
@@ -20,7 +21,6 @@ services:
       - .env
     volumes:
       - .:/var/www/html:cached
-
   mysql:
     image: mysql:5.7
     volumes:
