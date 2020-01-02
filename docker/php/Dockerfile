@@ -8,7 +8,7 @@ ARG GNAME=www
 RUN mkdir -p /app
 ADD . /app/
 
-ENV WORKDIR=/var/www/html
+ENV WORKDIR=/app
 WORKDIR $WORKDIR
 
 COPY ./docker/php/php.ini /usr/local/etc/php
