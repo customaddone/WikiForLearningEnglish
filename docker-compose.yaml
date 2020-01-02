@@ -5,22 +5,18 @@ services:
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
-    volumes:
-      - ./public:/var/www/html/public:ro
     ports:
-      - 8888:80
+      - 80:80
     environment:
       PHP_HOST: app
-
-  app:
+    depends_on:
+      - php-fpm
+  php-fpm:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
     env_file:
       - .env
-    volumes:
-      - .:/var/www/html:cached
-
   mysql:
     image: mysql:5.7
     volumes:
