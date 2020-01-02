@@ -1,25 +1,19 @@
-version: 0.2
-
-phases:
-  install:
-    runtime-versions:
-      docker: 18
-  pre_build:
-    commands:
-    - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-    - APP_REPO=$(aws ecr describe-repositories --repository-names app --output text --query "repositories[0].repositoryUri")
-    - NGINX_REPO=$(aws ecr describe-repositories --repository-names nginx --output text --query "repositories[0].repositoryUri")
-    - APP_IMAGE=$APP_REPO:latest
-    - NGINX_IMAGE=$NGINX_REPO:latest
-  build:
-    commands:
-    - docker build -t $APP_IMAGE -f ./docker/php/Dockerfile .
-    - docker push $APP_IMAGE
-    - docker build -t $NGINX_IMAGE -f ./docker/nginx/Dockerfile .
-    - docker push $NGINX_IMAGE
-
-  post_build:
-    commands:
-    - printf '[{"name":"app","imageUri":"%s"},{"name":"example","imageUri":"%s"}]' $APP_IMAGE $NGINX_IMAGE > imagedefinitions.json
-artifacts:
-  files: imagedefinitions.json
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.1.0
+  aws-ecs: circleci/aws-ecs@0.0.8
+workflows:
+  build_and_push_image:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          region: ${AWS_DEFAULT_REGION}
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: 'WikiForLearningEnglish'　# GitHubのリポジトリ名
+          tag: "example"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+                family: 'example'　# ECSのタスク定義名
+                cluster-name: 'example'　# ECSクラスター名
+                service-name: 'example'　# ECSのサービス名
+                container-image-name-updates: 'container=seeds-test,tag=${CIRCLE_SHA1}'　# タスク定義で指定しているコンテナ名
