@@ -91,6 +91,7 @@ jobs:
   build_image:
     docker:
       # Specify the version you desire here
+      - image: circleci/php:7.3-node-browsers
       - image: docker:19.03
 
     environment:
@@ -127,7 +128,7 @@ workflows:
       - build_image:
           # buildができたらbuild_image起動
           requires:
-             - build
+            - build
           # masterブランチでのみbuild_image起動
           #filters:
             #branches:
