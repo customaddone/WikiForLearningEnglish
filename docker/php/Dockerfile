@@ -1,21 +1,40 @@
-FROM centos:7
-MAINTAINER "yuki"
+FROM php:7.3-fpm-alpine
 
-# install apache2.4
-RUN yum -y install httpd
+ARG UID=991
+ARG UNAME=www
+ARG GID=991
+ARG GNAME=www
 
-# install php5.6
-RUN yum -y install epel-release
-RUN rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
-RUN yum remove php-*
-RUN yum -y install --enablerepo=remi,remi-php71 php php-devel php-mbstring php-mysql php-pdo php-gd
-RUN yum -y install git
+ENV WORKDIR=/var/www/html
+WORKDIR $WORKDIR
 
-WORKDIR /root/
-RUN git clone git@github.com:customaddone/WikiForLearningEnglish.git
-RUN cp -r /root/WikiForLearningEnglish/* /var/www/html/
+COPY ./docker/php/php.ini /usr/local/etc/php
+COPY composer.json composer.lock ${WORKDIR}/
 
-ADD 10-php.conf /opt/docker/etc/httpd/conf.d/
+RUN set -x \
+    && apk update && \
+    apk add --update --no-cache --virtual=.build-dependencies \
+      autoconf \
+      gcc \
+      g++ \
+      make \
+      tzdata && \
+    apk add --update --no-cache \
+      icu-dev \
+      libzip-dev \
+    && docker-php-ext-install pdo_mysql zip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer install --no-autoloader --no-progress --no-dev
 
-# enable service.
-RUN systemctl enable httpd
+COPY . .
+
+RUN set -x \
+    && composer install --no-progress --no-dev \
+    && php artisan config:clear \
+    && addgroup ${GNAME} -g ${GID} \
+    && adduser -D -G ${GNAME} -u ${UID} ${UNAME} \
+    && chown -R ${UNAME}:${GNAME} ${WORKDIR} \
+    && mv /root/.composer /home/${UNAME}/ \
+    && chown -R ${UNAME}:${GNAME} /home/${UNAME}
+
+USER ${UNAME}
