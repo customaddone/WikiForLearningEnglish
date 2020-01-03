@@ -39,4 +39,4 @@ RUN set -x \
 
 USER ${UNAME}
 
-RUN ls
+RUN ls /var/www/html
