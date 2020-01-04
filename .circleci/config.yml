@@ -132,8 +132,7 @@ jobs:
           name: deploy # 新しいタスク定義ファイルを作成し、ECSに反映させる
           command: |
             aws ecs describe-task-definition --task-definition sample-service | jq '.taskDefinition | { containerDefinitions: .containerDefinitions }' > task_definition.json
-            aws ecs register-task-definition --family sample-service --cli-input-json file://task_definition.json
-            aws ecs update-service --cluster sample-ecs-cluster --service sample-service --task-definition sample-service
+
 workflows:
   version: 2
   test:
