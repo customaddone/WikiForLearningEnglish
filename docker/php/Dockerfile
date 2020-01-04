@@ -38,5 +38,3 @@ RUN set -x \
     && chown -R ${UNAME}:${GNAME} /home/${UNAME}
 
 USER ${UNAME}
-
-RUN ls /var/www/html
