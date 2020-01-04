@@ -121,15 +121,21 @@ jobs:
       - run:
           name: Push docker image
           command: |
-            docker build -f ./docker/php/Dockerfile .
+            docker build -f ./docker/php/Dockerfile -t $APP_IMAGE .
             docker push $APP_IMAGE
-            docker build -f ./docker/nginx/Dockerfile .
+            docker build -f ./docker/nginx/Dockerfile -t $NGINX_IMAGE .
             docker push $NGINX_IMAGE
       - run:
           name: download jq # JSONファイルを簡単に操作するためにjqをインストール
           command: |
             wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
             mv jq-linux64 jq
+      - run:
+          name: deploy # 新しいタスク定義ファイルを作成し、ECSに反映させる
+          command: |
+            aws ecs describe-task-definition --task-definition sample-service | jq '.taskDefinition | { containerDefinitions: .containerDefinitions }' > task_definition.json
+            aws ecs register-task-definition --family sample-service --cli-input-json file://task_definition.json
+            aws ecs update-service --cluster sample-ecs-cluster --service sample-service --task-definition sample-service
 workflows:
   version: 2
   test:
