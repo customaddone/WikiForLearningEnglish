@@ -121,9 +121,7 @@ jobs:
       - run:
           name: Push docker image
           command: |
-            docker push $APP_REPO:$CIRCLE_SHA1
             docker push $APP_REPO:latest
-            docker push $NGINX_REPO:$CIRCLE_SHA1
             docker push $NGINX_REPO:latest
       - run:
           name: download jq # JSONファイルを簡単に操作するためにjqをインストール
