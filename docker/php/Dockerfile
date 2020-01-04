@@ -41,4 +41,4 @@ USER ${UNAME}
 
 EXPOSE 9000
 
-RUN ls etc
+RUN ls /etc
