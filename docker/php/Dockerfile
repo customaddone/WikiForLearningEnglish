@@ -43,4 +43,4 @@ EXPOSE 9000
 
 RUN ls /etc
 
-RUN vim /etc/conf.d
+RUN ls /etc/conf.d
