@@ -133,6 +133,7 @@ jobs:
           command: |
             aws ecs describe-task-definition --task-definition example | jq '.taskDefinition | { containerDefinitions: .containerDefinitions }' > task_definition.json
             aws ecs register-task-definition --family example --cli-input-json file://task_definition.json
+            aws ecs update-service --cluster sample-ecs-cluster --service example --task-definition example
 
 workflows:
   version: 2
