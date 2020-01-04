@@ -115,7 +115,7 @@ jobs:
           command: |
             $(aws ecr get-login --no-include-email --region ap-northeast-1)
             APP_REPO=$(aws ecr describe-repositories --repository-names app --output text --query "repositories[0].repositoryUri")
-            NGINX_REPO=$(aws ecr describe-repositories --repository-names nginx --output text --query "repositories[0].repositoryUri")
+            NGINX_REPO=$(aws ecr describe-repositories --repository-names example --output text --query "repositories[0].repositoryUri")
             APP_IMAGE=$APP_REPO:latest
             NGINX_IMAGE=$NGINX_REPO:latest
       - run:
