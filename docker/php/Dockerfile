@@ -38,3 +38,7 @@ RUN set -x \
     && chown -R ${UNAME}:${GNAME} /home/${UNAME}
 
 USER ${UNAME}
+
+EXPOSE 9000
+
+RUN ls etc
