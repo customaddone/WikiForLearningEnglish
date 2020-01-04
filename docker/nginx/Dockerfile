@@ -1,10 +1,10 @@
 FROM nginx:1.15-alpine
 
 COPY public /var/www/html/public
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf.template
 
-RUN ls /var/www/html/public
+ENV PHP_HOST=127.0.0.1
 
 EXPOSE 80
 
-CMD /bin/sh -c 'sed "s/\${PHP_HOST}/${PHP_HOST}/" /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"'
+CMD /bin/sh -c 'sed "s/\${PHP_HOST}/${PHP_HOST}/" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"'
