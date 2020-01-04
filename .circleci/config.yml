@@ -115,15 +115,15 @@ jobs:
           command: |
             $(aws ecr get-login --no-include-email --region ap-northeast-1)
             APP_REPO=$(aws ecr describe-repositories --repository-names app --output text --query "repositories[0].repositoryUri")
-            NGINX_REPO=$(aws ecr describe-repositories --repository-names example --output text --query "repositories[0].repositoryUri")
+            NGINX_REPO=$(aws ecr describe-repositories --repository-names nginx --output text --query "repositories[0].repositoryUri")
             APP_IMAGE=$APP_REPO:latest
             NGINX_IMAGE=$NGINX_REPO:latest
       - run:
           name: Push docker image
           command: |
-            docker build -t $APP_IMAGE -f ./docker/php/Dockerfile .
+            docker build -f ./docker/php/Dockerfile .
             docker push $APP_IMAGE
-            docker build -t $NGINX_IMAGE -f ./docker/nginx/Dockerfile .
+            docker build -f ./docker/nginx/Dockerfile .
             docker push $NGINX_IMAGE
       - run:
           name: download jq # JSONファイルを簡単に操作するためにjqをインストール
